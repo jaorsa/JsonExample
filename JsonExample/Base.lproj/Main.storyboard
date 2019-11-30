@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13122.16" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="0sj-Kk-FG8">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13104.12"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -9,16 +11,219 @@
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="JsonExample" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" xcode11CocoaTouchSystemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="-603" y="305"/>
+        </scene>
+        <!--Resource View Controller-->
+        <scene sceneID="Pd5-P3-01W">
+            <objects>
+                <viewController id="enJ-ns-hOh" customClass="ResourceViewController" customModule="JsonExample" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="ZZT-7l-jnl">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="Pbk-lL-knB"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="xRK-DP-MvO" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="445" y="716"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="HRo-ls-Lom">
+            <objects>
+                <navigationController id="0sj-Kk-FG8" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="NQz-mJ-GNx">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="lRz-2J-yfL" kind="relationship" relationship="rootViewController" id="VIG-5p-a8S"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ND8-1T-Q15" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="862" y="62"/>
+        </scene>
+        <!--Home View Controller-->
+        <scene sceneID="7HJ-Mx-gZt">
+            <objects>
+                <viewController id="lRz-2J-yfL" customClass="HomeViewController" customModule="JsonExample" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8hQ-fZ-LdY">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="3fz-gB-GdA"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="m38-vB-MgW"/>
+                    <connections>
+                        <segue destination="13b-Xd-s1b" kind="show" identifier="TabController" id="Yj7-lT-nUL"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ifl-A8-SMT" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1826" y="62"/>
+        </scene>
+        <!--Subzone View Controller-->
+        <scene sceneID="Sti-Hq-fHB">
+            <objects>
+                <viewController storyboardIdentifier="SubzoneViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="kG0-Nu-nag" customClass="SubzoneViewController" customModule="JsonExample" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Ldd-Re-q4f">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="sN3-b6-ud1"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="wxW-p1-b1F"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="b6S-Aq-OUO" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="5580" y="763"/>
+        </scene>
+        <!--Zone View Controller-->
+        <scene sceneID="Kw3-rV-Hs5">
+            <objects>
+                <viewController id="W52-es-dYK" customClass="ZoneViewController" customModule="JsonExample" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="YWq-Ug-ZXq">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="6qT-ss-Fw2"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="KfA-Wd-qHO" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="6927" y="559"/>
+        </scene>
+        <!--Elementos Controller-->
+        <scene sceneID="UE3-Tk-ytc">
+            <objects>
+                <viewController storyboardIdentifier="ElementosController" id="8wE-yv-ys6" customClass="ElementosController" customModule="JsonExample" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="bUf-KX-2zg">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="gHf-Ln-2cJ"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="54m-hA-sgF"/>
+                    <connections>
+                        <segue destination="GiG-Cc-HBB" kind="show" identifier="PlantingViewController" id="5B4-Hb-2bb"/>
+                        <segue destination="BXD-ca-eg8" kind="show" identifier="ResourceViewController" id="sCN-MI-sjj"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Yyl-Ye-cIy" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3796" y="129"/>
+        </scene>
+        <!--Tab Controller-->
+        <scene sceneID="PZ0-yw-HVA">
+            <objects>
+                <tabBarController id="13b-Xd-s1b" customClass="TabController" customModule="JsonExample" customModuleProvider="target" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="bl4-3O-sWI"/>
+                    <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="gol-Zv-Vhp">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="49"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </tabBar>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="FI0-xb-Qg8" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2997" y="87"/>
+        </scene>
+        <!--Settings Controller-->
+        <scene sceneID="KmG-Zb-sB4">
+            <objects>
+                <viewController id="2HZ-UI-JjU" customClass="SettingsController" customModule="JsonExample" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="25F-c1-ZN4">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="war-Ga-O7g"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="yoE-eo-x1s" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1923" y="763"/>
+        </scene>
+        <!--Planting View Controller-->
+        <scene sceneID="e2G-p5-LuO">
+            <objects>
+                <viewController storyboardIdentifier="PlantingViewController" id="GiG-Cc-HBB" customClass="PlantingViewController" customModule="JsonExample" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="lSN-JE-z7b">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="Vpa-9y-aHv"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="6hV-kU-bdB"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="hr3-4M-qCD" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="5023" y="142"/>
+        </scene>
+        <!--Settings Controller-->
+        <scene sceneID="LWc-IT-dzk">
+            <objects>
+                <viewController id="nWL-I2-31G" customClass="SettingsController" customModule="JsonExample" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="qhY-fH-pg8">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="vV5-s3-TKS"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="gfM-W5-Cgf" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="5758" y="119"/>
+        </scene>
+        <!--Resource View Controller-->
+        <scene sceneID="X3i-by-I6b">
+            <objects>
+                <viewController storyboardIdentifier="ResourceViewController" id="BXD-ca-eg8" customClass="ResourceViewController" customModule="JsonExample" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="7UY-Vm-Z5z">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="upD-X6-7HS"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="sKs-LR-Rdd"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="IRc-aq-oRw" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4830" y="579"/>
+        </scene>
+        <!--Score Table Controller-->
+        <scene sceneID="fsa-Uv-VvC">
+            <objects>
+                <viewController storyboardIdentifier="ScoreTableController" id="X3L-fi-UBf" customClass="ScoreTableController" customModule="JsonExample" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="0Mh-Ie-8xR">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Axv-4M-8oa" customClass="MacawChartView" customModule="JsonExample" customModuleProvider="target">
+                                <rect key="frame" x="12" y="204" width="392" height="409"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="rU8-Jx-B4X"/>
+                    </view>
+                    <connections>
+                        <outlet property="chartView" destination="Axv-4M-8oa" id="BSR-jz-8LY"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ssv-Zp-E2S" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1126" y="790"/>
         </scene>
     </scenes>
 </document>
