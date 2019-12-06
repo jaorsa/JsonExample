@@ -20,7 +20,7 @@ class AnimalCell: UITableViewCell{
     
     let BornLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont(name: "AvenirNext-Default", size: 5)
+        label.font = UIFont(name: "AvenirNext-DemiBold", size: 14)
         label.textColor = UIColor.lightGray
         label.text = "0"
         label.translatesAutoresizingMaskIntoConstraints = false

@@ -16,6 +16,9 @@ class AnimalViewController: UIViewController {
     var refresher: UIRefreshControl!
     var teamInfoHeader: TeamInfoHeader!
     var animalid: Int?
+    var usuariost: Usuarios?
+    var tmpusuarios = [Usuarios]()
+    
     
     let tableView: UITableView = {
         let table = UITableView()
@@ -32,10 +35,11 @@ class AnimalViewController: UIViewController {
         return view
     }()
     
-    let popUpWindow: PopTeamsWindow = {
+    lazy var popUpWindow: PopTeamsWindow = {
        let view = PopTeamsWindow()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.cornerRadius = 5
+        view.delegate = self
         return view
     }()
     
@@ -60,7 +64,7 @@ class AnimalViewController: UIViewController {
         
         view.addSubview(addButton)
         addButton.anchor(top: teamInfoHeader.bottomAnchor, left: nil, bottom: nil, right: view.rightAnchor, paddingTop: 3, paddingLeft: 0, paddingBottom: 0, paddingRight: 30, height: 20)
-        //addButton.addTarget(self, action: #selector(handleaddZone), for: .touchUpInside)
+        addButton.addTarget(self, action: #selector(handleaddAnimal), for: .touchUpInside)
         
         
         view.addSubview(tableView)
@@ -94,7 +98,7 @@ class AnimalViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
            super.viewWillAppear(animated)
-        load()
+            load()
            navigationController?.setNavigationBarHidden(true, animated: false)
        }
        
@@ -106,6 +110,10 @@ class AnimalViewController: UIViewController {
     @objc func load(){
         if teamid == nil{
             animals = []
+            let presuser = Usuarios(id: usuario!.id, name: usuario?.name, lastname: usuario?.lastname, correo: usuario?.correo, estrellas: usuario?.estrellas, admin: usuario?.admin)
+            self.tmpusuarios.append(presuser)
+            //teamusers?.append(presuser)
+            
         }else{
             sharedTeamInstance.getByIdRequest(url: "http://granjapp2.appspot.com/teams/", id: "\(teamid!)") {(userteam, error) in
             if error == nil {
@@ -114,22 +122,25 @@ class AnimalViewController: UIViewController {
                     teamusers = equipo?.usuarios
                     animals = equipo?.animals
                     zon = equipo?.zones
-                    print(zon)
-                    print(equipo)
-                    print(animals)
+                    
                 self.tableView.reloadData()
-                
+                self.refresher.endRefreshing()
                 }
-                //self.refresher.endRefreshing()
+                
             }
         }
         }
         
     }
     
+    @objc func handleaddAnimal(){
+        let controller = AddAnimalBed()
+        controller.delegate = self
+        self.present(UINavigationController(rootViewController: controller), animated: true, completion: nil)
+    }
+    
     @objc func handleShowPopUp(){
-        print("boton presionado")
-        print(equipos)
+        
         view.addSubview(popUpWindow)
         popUpWindow.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -40).isActive = true
         popUpWindow.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
@@ -160,10 +171,6 @@ class AnimalViewController: UIViewController {
         sharedAnimalInstance.deleteRequest(url: "http://granjapp2.appspot.com/animal/", id: "12")
     }
     
-    
-    @objc func updateresource(){
-        sharedAnimalInstance.putRequest(url: "http://granjapp2.appspot.com/animal/", id: "11", fechaNacimiento: "2012-11-04T14:51:06.157Z", no_h: 1, no_m: 2, salud: 1, especie: 1, etapa: 2)
-    }
 }
 extension AnimalViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -178,15 +185,64 @@ extension AnimalViewController: UITableViewDelegate, UITableViewDataSource{
         
     }
     
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            if teamid == usuario?.admin{
+                sharedActivitiesInstance.deleteRequest(url: "http://granjapp2.appspot.com/animal/", id: "\(animals?[indexPath.row].id)"){(sucess) in
+                    if sucess == true{
+                        DispatchQueue.main.async {
+                             let alert = UIAlertController(title: "Camada eliminada", message: "La camada se ha eliminado con exito", preferredStyle: .alert)
+                                                   let action = UIAlertAction(title: "Aceptar", style: .default) { (action:UIAlertAction) in
+                                                   }
+                                                   alert.addAction(action)
+                                                self.present(alert, animated: true, completion: nil)
+                                                   self.load()
+                        }
+                    }
+                }
+            }
+            else{
+                let alert = UIAlertController(title: "No es posible eliminar camada " + "\(animals![indexPath.row].name) ", message: "No eres administrador del equipo", preferredStyle: .alert)
+                let action = UIAlertAction(title: "Aceptar", style: .default) { (action:UIAlertAction) in
+                }
+                alert.addAction(action)
+                self.present(alert, animated: true, completion: nil)
+            }
+        }
+    }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let animal = animals?[indexPath.row]
         let controller = ViewAnimalController()
         controller.animal = animal
-        print(animal)
+        
         navigationController?.pushViewController(controller, animated: true)
         navigationController?.navigationBar.isHidden = false
     }
     
 }
+extension AnimalViewController: AddAnimalBedDelegate {
+    func addanimal(animal: [String : Any]) {
+        self.dismiss(animated: true)
+        save(body: animal)
+        tableView.reloadData()
+    }
+    
+    
+}
 
+extension AnimalViewController: PopUpDelegate {
+    func handleDismissal() {
+        UIView.animate(withDuration: 0.5, animations: {
+            self.efectView.alpha = 0
+            self.popUpWindow.alpha = 0
+            self.popUpWindow.transform = CGAffineTransform(scaleX: 1.3, y: 1.3)
+        }){
+            (_) in
+            self.popUpWindow.removeFromSuperview()
+            
+        }
+        load()
+    }
+}
 

@@ -99,7 +99,7 @@ class ZoneViewController: UIViewController {
         addButton.addTarget(self, action: #selector(handleaddZone), for: .touchUpInside)
         
         view.addSubview(tableView)
-        tableView.anchor(top: addButton.bottomAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, paddingTop: 5, paddingLeft: 5, paddingBottom: 20, paddingRight: 0)
+        tableView.anchor(top: addButton.bottomAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, paddingTop: 5, paddingLeft: 5, paddingBottom: 20, paddingRight: 15)
         tableView.dataSource = self
         tableView.delegate = self
         
@@ -123,14 +123,14 @@ class ZoneViewController: UIViewController {
 
     @objc func load(){
         if teamid == nil{
-            print("teamid es nulo")
+           
         }else{
             
             sharedTeamInstance.getByIdRequest(url: "http://granjapp2.appspot.com/teams/", id: "\(teamid!)") {(userteam, error) in
                 if error == nil {
                     DispatchQueue.main.async {
                         equipo = userteam
-                        print(equipo)
+                        
                         zon =  equipo?.zones
                         self.refresher.endRefreshing()
                         self.tableView.reloadData()
@@ -138,14 +138,13 @@ class ZoneViewController: UIViewController {
                 }
             }
             if zon?.isEmpty == false{
-                print("zonas tiene algo")
+                
                 for i in 0...(zon!.count)-1{
                     sharedZoneInstance.getByIdRequest(url: "http://granjapp2.appspot.com/zone/", id: "\(zon![i].id)") {(result, error) in
                         if error == nil {
                             DispatchQueue.main.async {
                                 self.zona = result
-                                print("result")
-                                print(self.zona)
+                                
                                 zones.append(result)
                                 self.refresher.endRefreshing()
                             }
@@ -154,8 +153,7 @@ class ZoneViewController: UIViewController {
                         
                     }
                 }
-                print("zonas del equipo")
-                print(zones)
+                
             }
             else{print("zonas esta vacía")}
         }
@@ -164,7 +162,7 @@ class ZoneViewController: UIViewController {
     }
     
     @objc func handleShowPopUp(){
-        print("boton presionado")
+        
         view.addSubview(popUpWindow)
         popUpWindow.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -40).isActive = true
         popUpWindow.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
@@ -199,12 +197,25 @@ class ZoneViewController: UIViewController {
            }
     
     @objc func handleaddZone(){
-        if teamid == nil{
+        if usuario?.admin != teamid{
+            if teamid == nil{
+                let alert = UIAlertController(title: "No es posible agregar zona", message: "No perteneces a un equipo", preferredStyle: .alert)
+                let action = UIAlertAction(title: "Aceptar", style: .default) { (action:UIAlertAction) in
+                }
+                alert.addAction(action)
+                self.present(alert, animated: true, completion: nil)
+            }else{
+                let alert = UIAlertController(title: "No es posible agregar zona", message: "No eres administrador del equipo", preferredStyle: .alert)
+                let action = UIAlertAction(title: "Aceptar", style: .default) { (action:UIAlertAction) in
+                }
+                alert.addAction(action)
+                self.present(alert, animated: true, completion: nil)
+            }
         }
         else{
-        let controller = AddAZoneViewController()
-        controller.delegate = self
-        self.present(UINavigationController(rootViewController: controller), animated: true, completion: nil)
+            let controller = AddAZoneViewController()
+            controller.delegate = self
+            self.present(UINavigationController(rootViewController: controller), animated: true, completion: nil)
         }
     }
     
@@ -235,32 +246,45 @@ extension ZoneViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell =  tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as! ZoneCell
         //cell.deleg = self
-        cell.textLabel?.text = zon?[indexPath.row].name
+        cell.textLabel?.font = UIFont(name: "AvenirNext-DemiBold", size: 18)
+        cell.textLabel?.text = "Zona: " + (zon?[indexPath.row].name)!
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-        /*subzonas = zones[indexPath.row]?.subzones
-        print("subzonas")
-        print(subzonas)*/
         let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "SubzoneViewController") as! SubzoneViewController
         zoneid = zones[indexPath.row]?.id
         
         //controller.subzonas = subzonas
         self.navigationController?.pushViewController(controller, animated: true)
-        print(zoneid)
         
-        print("done")
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            //deleteresource(id: "\(zonas![indexPath.row].id)")
-            //zonas!.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .automatic)
+            if editingStyle == .delete {
+                if teamid == usuario?.admin{
+                    sharedActivitiesInstance.deleteRequest(url: "http://granjapp2.appspot.com/zone/", id: "\(zones[indexPath.row]?.id)"){(sucess) in
+                        if sucess == true{
+                            DispatchQueue.main.async {
+                                 let alert = UIAlertController(title: "Zona eliminada", message: "La zona se ha eliminado con exito", preferredStyle: .alert)
+                                                       let action = UIAlertAction(title: "Aceptar", style: .default) { (action:UIAlertAction) in
+                                                       }
+                                                       alert.addAction(action)
+                                                       self.present(alert, animated: true, completion: nil)
+                                                       self.load()
+                            }
+                        }
+                    }
+                }
+                else{
+                    let alert = UIAlertController(title: "No es posible eliminar zona", message: "No eres administrador del equipo", preferredStyle: .alert)
+                    let action = UIAlertAction(title: "Aceptar", style: .default) { (action:UIAlertAction) in
+                    }
+                    alert.addAction(action)
+                    self.present(alert, animated: true, completion: nil)
+                }
+            }
         }
-    }
 }
 
 extension ZoneViewController: AddZoneDelegate{
@@ -282,7 +306,7 @@ extension ZoneViewController: PopUpDelegate {
         }){
             (_) in
             self.popUpWindow.removeFromSuperview()
-            print("popUpWindow removida")
+            
         }
         load()
     }

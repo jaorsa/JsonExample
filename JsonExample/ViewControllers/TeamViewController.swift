@@ -8,18 +8,16 @@
 
 import UIKit
 
-private let reuseIdentifier = "TodoCell"
+private let reuseIdentifier = "TeamCell"
 
 
-class UsersViewController: UIViewController {
-    var usuarios: [Users] = []
-    var usuario: Users?
-    var roles: [Roles] = []
-    var actividades: [Activities] = []
+class TeamViewController: UIViewController {
+    var teams: [Teams] = []
+    
     
     let tableView: UITableView = {
         let table = UITableView()
-        table.register(TodoCell.self, forCellReuseIdentifier: reuseIdentifier)
+        table.register(TeamCell.self, forCellReuseIdentifier: reuseIdentifier)
         table.rowHeight = 50
         
         return table
@@ -27,7 +25,7 @@ class UsersViewController: UIViewController {
     
     let loadButton: UIButton = {
        let button = UIButton()
-        button.setTitle("Load Usuarios", for: .normal)
+        button.setTitle("Load Teams", for: .normal)
         button.setTitleColor(UIColor.lightGray, for: .normal)
         //button.backgroundColor = UIColor.green
         return button
@@ -35,7 +33,7 @@ class UsersViewController: UIViewController {
     
     let saveButton: UIButton = {
        let button = UIButton()
-        button.setTitle("Save Usuario", for: .normal)
+        button.setTitle("Save Teams", for: .normal)
         button.setTitleColor(UIColor.lightGray, for: .normal)
         //button.backgroundColor = UIColor.green
         return button
@@ -43,7 +41,7 @@ class UsersViewController: UIViewController {
     
     let deleteButton: UIButton = {
        let button = UIButton()
-        button.setTitle("Delete Usuarios", for: .normal)
+        button.setTitle("Delete Teams", for: .normal)
         button.setTitleColor(UIColor.lightGray, for: .normal)
         //button.backgroundColor = UIColor.green
         return button
@@ -51,7 +49,7 @@ class UsersViewController: UIViewController {
     
     let updateButton: UIButton = {
        let button = UIButton()
-        button.setTitle("Update Usuario", for: .normal)
+        button.setTitle("Update Team", for: .normal)
         button.setTitleColor(UIColor.lightGray, for: .normal)
         //button.backgroundColor = UIColor.green
         return button
@@ -95,10 +93,10 @@ class UsersViewController: UIViewController {
 
     @objc func load(){
         loadButton.setTitleColor(UIColor.blue, for: .normal)
-        sharedUsersInstance.getRequest(url: "http://localhost:10010/users"){(str, array, error) in
+        sharedTeamInstance.getRequest(url: "http://ranjapp2.appspot.com/teams"){(str, array, error) in
             if error == nil {
                 DispatchQueue.main.async {
-                    self.usuarios = array
+                    self.teams = array
                     print(array)
                     self.tableView.reloadData()
                 }
@@ -107,32 +105,31 @@ class UsersViewController: UIViewController {
     }
     
     @objc func save(){
-        
+        saveButton.setTitleColor(UIColor.blue, for: .normal)
+        let tmp = ["name": "Kick", "description":""] as [String : Any]
+            sharedTeamInstance.postRequest(url: "http://localhost:10010/teams", body: tmp)
     }
     
     
     @objc func deleteresource(){
         deleteButton.setTitleColor(UIColor.blue, for: .normal)
-        //sharedCultivoInstance.deleteRequest(url: "http://localhost:10010/crops/", id: "7")
+        sharedTeamInstance.deleteRequest(url: "http://localhost:10010/teams/", id: "3")
     }
     
     
     @objc func updateresource(){
         updateButton.setTitleColor(UIColor.blue, for: .normal)
-        let tmp = ["name": "gracias dios"] as [String:Any]
-        //sharedEspecieInstance.putRequest(url: "http://localhost:10010/users/", id: "2", body: tmp)
+        sharedTeamInstance.putRequest(url: "http://localhost:10010/teams/", id: "3", name: "Woodies", description: "Equipo")
     }
 }
-extension UsersViewController: UITableViewDelegate, UITableViewDataSource{
+extension TeamViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return usuarios.count
+        return teams.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
-        cell.textLabel?.text = usuarios[indexPath.row].name
-        //roles = usuarios[0].roles!
-        //print(roles)
+        cell.textLabel?.text = teams[indexPath.row].name
         return cell
     }
     

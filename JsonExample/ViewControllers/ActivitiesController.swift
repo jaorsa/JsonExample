@@ -22,13 +22,15 @@ class ActivitiesController: UIViewController{
     var actlimit = 0
     var refresher: UIRefreshControl!
     var teamInfoHeader: TeamInfoHeader!
+    var puntuacion = 0
+    var terminadas = 0
     
-    let tittleLabel: UILabel = {
+    let actLabel: UILabel = {
         let label = UILabel()
         label.tintColor = UIColor.black
-        label.text = "Tareas"
+        label.text = "actividades"
         label.textAlignment = .center
-        label.font = UIFont.boldSystemFont(ofSize: 40)
+        label.font = UIFont.boldSystemFont(ofSize: 12)
         return label
     }()
     
@@ -48,10 +50,11 @@ class ActivitiesController: UIViewController{
         return view
     }()
     
-    let popUpWindow: PopTeamsWindow = {
+    lazy var popUpWindow: PopTeamsWindow = {
        let view = PopTeamsWindow()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.cornerRadius = 5
+        view.delegate = self
         return view
     }()
     
@@ -65,6 +68,7 @@ class ActivitiesController: UIViewController{
         bar.clipsToBounds = true
         return bar
     }()
+
     
     
     let topcontainer: UIView = {
@@ -78,7 +82,7 @@ class ActivitiesController: UIViewController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print(activities as Any)
+        
         //self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(handleaddActivity))
         view.backgroundColor = .white
         let frame = CGRect(x: 0, y: 100, width: view.frame.width, height: 60)
@@ -98,19 +102,17 @@ class ActivitiesController: UIViewController{
         efectView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         efectView.alpha = 0
         
-        
-        
         load()
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        load()
+        
         navigationController?.setNavigationBarHidden(true, animated: false)
     }
     
     override func viewWillAppear(_ animated: Bool) {
            super.viewWillAppear(animated)
-        load()
+            
            navigationController?.setNavigationBarHidden(true, animated: false)
        }
        
@@ -139,31 +141,43 @@ class ActivitiesController: UIViewController{
         
         view.addSubview(topcontainer)
         topcontainer.anchor(top: teamInfoHeader.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, height: 50)
-        /*
-        topcontainer.addSubview(tittleLabel)
-        tittleLabel.anchor(top: nil, left: topcontainer.leftAnchor, bottom: topcontainer.bottomAnchor, paddingTop: 0, paddingLeft: 3, paddingBottom: 0, width: 150, height: 40)*/
+        
         topcontainer.addSubview(addButton)
         addButton.anchor(top: topcontainer.topAnchor, bottom: nil, right: topcontainer.rightAnchor, paddingTop: 10, paddingBottom: 0, paddingRight: 50)
         addButton.addTarget(self, action: #selector(handleaddActivity), for: .touchUpInside)
         topcontainer.addSubview(progressBar)
         progressBar.anchor(top: topcontainer.topAnchor, left: topcontainer.leftAnchor, bottom: nil, right: addButton.leftAnchor, paddingTop: 20, paddingLeft: 10, paddingBottom: 0, paddingRight: 30, height: 15)
+        topcontainer.addSubview(actLabel)
+        actLabel.anchor(top: progressBar.bottomAnchor, left: topcontainer.leftAnchor, bottom: nil, right: topcontainer.rightAnchor, paddingTop: 3, paddingLeft: 10, paddingBottom: 0, paddingRight: 20,height: 15)
     }
+    
     
     func save(tmp: [String:Any]){
-        sharedActivityInstance.postRequest(url: "http://granjapp2.appspot.com/activities", body: tmp){(success) in
+        sharedActivitiesInstance.postRequest(url: "http://granjapp2.appspot.com/activities", body: tmp)
+    }
+    
+    func updateresource(){
+        let body = ["id": actividad!.id, "name": actividad!.name!, "fechaInicio": actividad!.fechaInicio!, "terminado": 1, "descripcion": actividad!.descripcion!, "complejidad": actividad!.complejidad!, "usuario":actividad!.usuario, "calificacion": actividad!.calificacion, "equipo": actividad!.equipo] as [String : Any]
+        sharedActivitiesInstance.putRequest(url: "http://granjapp2.appspot.com/activities/",id: "\(actividad!.id)",body: body){(success) in
+            if success == true{
+                DispatchQueue.main.async {
+                    sharedUsersInstance.getByIdRequest(url: "http://granjapp2.appspot.com/users/", id: "\((self.actividad!.usuario)!)"){ (response,error) in
+                        DispatchQueue.main.async {
+                            let user = response
+                            
+                            let usertmp = ["id": user.id,"name": user.name!, "lastname": user.lastname!, "correo": user.correo!, "estrellas": (user.estrellas! + self.puntuacion), "admin": user.admin!, "password": user.password!] as [String:Any]
+                            
+                            sharedUsersInstance.putRequest(url: "http://granjapp2.appspot.com/users/", id: "\(user.id)", body: usertmp)
+                        }
+                    }
+                }
+            }
             
         }
-    }
-    
-    func updateresource(calificacion: Int){
         
-        sharedActivityInstance.putRequest(url: "http://localhost:10010/activities/", id: "\(actividad!.id)", name: actividad!.name!, fechaInicio: actividad!.fechaInicio!, terminado: 1, descripcion: actividad!.descripcion!, complejidad: actividad!.complejidad!, usuario:
-            actividad!.usuario!, calificacion: calificacion)
+        
     }
     
-    func deleteact(id: String){
-        sharedZoneInstance.deleteRequest(url: "http://granjapp2.appspot.com/activities/", id: id)
-    }
     
     @objc func load(){
         if teamid == nil{
@@ -172,7 +186,7 @@ class ActivitiesController: UIViewController{
                 DispatchQueue.main.async {
                     usuario = user
                     self.activities = usuario!.activities!
-                    print(self.activities)
+                    
                     self.tableView.reloadData()
                     self.refresher.endRefreshing()
                     }
@@ -185,18 +199,23 @@ class ActivitiesController: UIViewController{
                 DispatchQueue.main.async {
                     equipo = team
                     self.activities = equipo!.actividades!
-                    print(self.activities)
+                    
                     self.tableView.reloadData()
                     self.refresher.endRefreshing()
+                    self.actlimit = self.activities.count
+                    
+                    if self.activities != nil{
+                        self.actLabel.text = "\(self.terminadas)" + " / " + "\(self.activities.count) " + "terminadas"
+                        }
                     }
                 }
             }
         }
+        
     }
     
     @objc func handleShowPopUp(){
-        print("boton presionado")
-        print(equipos)
+        
         view.addSubview(popUpWindow)
         popUpWindow.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -40).isActive = true
         popUpWindow.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
@@ -241,7 +260,7 @@ extension ActivitiesController: UITableViewDelegate, UITableViewDataSource{
         cell.activity = activities[indexPath.row]
         return cell
     }
-    
+    /*
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let activity = activities[indexPath.row]
         let controller = ViewActivityController()
@@ -250,10 +269,32 @@ extension ActivitiesController: UITableViewDelegate, UITableViewDataSource{
         navigationController?.navigationBar.isHidden = false
         //performSegue(withIdentifier: "ViewActivityController", sender: activity)
     }
-    
+        */
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            tableView.deleteRows(at: [indexPath], with: .automatic)
+            if teamid == usuario?.admin{
+                sharedActivitiesInstance.deleteRequest(url: "http://granjapp2.appspot.com/activities/", id: "\(activities[indexPath.row].id)"){(sucess) in
+                    if sucess == true{
+                        DispatchQueue.main.async {
+                             let alert = UIAlertController(title: "Actividad eliminada", message: "La actividad se ha eliminado con exito", preferredStyle: .alert)
+                                                   let action = UIAlertAction(title: "Aceptar", style: .default) { (action:UIAlertAction) in
+                                                   }
+                                                   alert.addAction(action)
+                                                   self.present(alert, animated: true, completion: nil)
+                                                   //tableView.deleteRows(at: [indexPath], with: .automatic)
+                                                   //self.tableView.reloadData()
+                                                   self.load()
+                        }
+                    }
+                }
+            }
+            else{
+                let alert = UIAlertController(title: "No es posible eliminar actividad", message: "No eres administrador del equipo", preferredStyle: .alert)
+                let action = UIAlertAction(title: "Aceptar", style: .default) { (action:UIAlertAction) in
+                }
+                alert.addAction(action)
+                self.present(alert, animated: true, completion: nil)
+            }
         }
     }
 }
@@ -274,43 +315,65 @@ extension ActivitiesController: DeleteActivitiesDelegate{
         var grade = 0
         var terminar = 0
         guard var act = cell.activity else{
-        print("Nada dentro")
+        
         return}
         
         let alertTittle = "Actividad Completada"
         let message = "La actividad \(act.name) ha sido completada"
         let alert = UIAlertController(title: alertTittle, message: message, preferredStyle: .alert)
         alert.addTextField{ (textfield) in
-            textfield.placeholder = "Ingresa la calificación que deseas darle a la actividad"
+            textfield.placeholder = "Calificacion entre 1 y 5"
         }
     
         alert.addAction(UIAlertAction(title: "Cancelar", style: .cancel, handler: nil))
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
-             //act.terminada = false
-            //print(act.terminada)
-            terminar = 0
-            print(terminar)
+            
             let textField = alert.textFields![0] // Force unwrapping because we know it exists.
             guard let cali = textField.text, textField.hasText else {
                 return
             }
             print("Text field: \(textField.text ?? "")")
             self.actividad = act
-            self.actividad?.calificacion! += Int(cali)!
-            self.updateresource(calificacion: (self.actividad?.calificacion!)!)
-            usuario?.estrellas = self.actividad?.calificacion!
-            print(usuario?.estrellas)
-            let id = "\(self.actividad?.id)"
-            self.deleteact(id: id)
+            
+            if Int(cali) != nil{
+                let intcalificacion = Int(cali)!
+                self.actividad!.calificacion! += intcalificacion
+            }else{
+                textField.text = ""
+                textField.placeholder = "Por favor ingrese una cantidad"
+                return
+            }
+            
+            self.terminadas+=1
+            self.actLabel.text = "\(self.terminadas)" + " / " + "\(self.activities.count) " + "terminadas"
+            self.puntuacion = self.actividad!.calificacion! * self.actividad!.complejidad!
+            self.updateresource()
                 self.tableView.reloadData()
                 self.progressBar.progress += Float(1.0/Float(self.actlimit))
                 self.progressBar.setProgress(self.progressBar.progress, animated: true)
                 if Int(self.progressBar.progress) == 1{
                     self.progressBar.progress = 0
                 }
-                print("terminar es ")
+                
             }
         ))
+        
         present(alert, animated: true, completion: nil)
+    }
+    
+}
+
+extension ActivitiesController: PopUpDelegate {
+    func handleDismissal() {
+        UIView.animate(withDuration: 0.5, animations: {
+            self.efectView.alpha = 0
+            self.popUpWindow.alpha = 0
+            self.popUpWindow.transform = CGAffineTransform(scaleX: 1.3, y: 1.3)
+        }){
+            (_) in
+            self.popUpWindow.removeFromSuperview()
+            
+        }
+        load()
     }
 }

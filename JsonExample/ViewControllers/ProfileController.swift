@@ -35,6 +35,10 @@ import UIKit
         emailLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         emailLabel.anchor(top: lastnameLabel.bottomAnchor, paddingTop: 5)
         
+        view.addSubview(offButton)
+        offButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        offButton.anchor(top: emailLabel.bottomAnchor,left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 15, paddingLeft:10, paddingBottom: 0, paddingRight: 15, height: 50)
+        
         return view
     }()
 
@@ -42,7 +46,7 @@ import UIKit
 
 let profileImageView: UIImageView = {
     let tmp = UIImageView()
-    tmp.image = #imageLiteral(resourceName: "images")
+    tmp.image = #imageLiteral(resourceName: "user")
     tmp.contentMode = .scaleAspectFill
     tmp.clipsToBounds = true
     tmp.layer.borderWidth = 3
@@ -94,6 +98,17 @@ let lastnameLabel: UITextField = {
     return label
 }()
 
+let offButton: UIButton = {
+    let button = UIButton()
+    button.setTitle("Eliminar Cuenta ", for: .normal)
+    button.backgroundColor = .red
+    button.setTitleColor(.white, for: .normal)
+    button.titleLabel?.font = UIFont(name: "AvenirNext-DemiBold", size: 18)
+   
+    button.layer.cornerRadius = 5
+    return button
+}()
+
 //Lifecycle
 class ProfileController: UIViewController{
 
@@ -106,12 +121,31 @@ class ProfileController: UIViewController{
         //self.navigationController?.navigationBar.prefersLargeTitles = true
         self.navigationItem.title = "Perfil"
         view.addSubview(containerView)
-        containerView.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.leftAnchor, right: view.rightAnchor, height: 350)
+        containerView.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.leftAnchor, right: view.rightAnchor, height: 500)
+        offButton.addTarget(self, action: #selector(deleteAccount), for: .touchUpInside)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(false, animated: true)
+    }
+    
+    @objc func deleteAccount(){
+        let alert = UIAlertController(title: "Eliminar cuenta", message: "Seguro que deseas eliminar tu cuenta?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Cancelar", style: .cancel, handler: nil))
+        let action = UIAlertAction(title: "Aceptar", style: .default) { (action:UIAlertAction) in
+            sharedUsersInstance.deleteRequest(url:"http://granjapp2.appspot.com/users/", id: "\(usuario!.id)"){
+                (success) in
+                if success == true{
+                    DispatchQueue.main.async {
+                        self.navigationController?.pushViewController(HomeViewController.init(), animated: true)
+                    }
+                    
+                }
+            }
+        }
+        alert.addAction(action)
+        self.present(alert, animated: true, completion: nil)
     }
     
     @objc func updateresource(){
@@ -124,13 +158,13 @@ class ProfileController: UIViewController{
             lastnameLabel.placeholder = "Apellido"
             return
         }
-        let tmp = ["name": nameLabel.text, "lastname": lastnameLabel.text, "correo": usuario!.correo, "estrellas": usuario!.estrellas, "admin": usuario!.admin ] as [String:Any]
+        let tmp = ["id": usuario!.id,"name": nameLabel.text, "lastname": lastnameLabel.text, "correo": usuario!.correo, "estrellas": usuario!.estrellas, "admin": usuario!.admin, "password":usuario!.password ] as [String:Any]
         sharedUsersInstance.putRequest(url: "http://granjapp2.appspot.com/users/", id: "\(usuario!.id)", body: tmp)
         sharedUsersInstance.getByIdRequest(url: "http://granjapp2.appspot.com/users/", id: "\(usuario!.id)") {(result, error) in
             if error == nil {
                 DispatchQueue.main.async {
                     usuario = result
-                    print(usuario)
+                    
                 }
                 //
             }

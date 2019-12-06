@@ -11,17 +11,13 @@ import UIKit
 private let reuseIdentifier = "TodoCell"
 var siembras: [planting]?
 var plantings: [Planting]?
-var cultivos: [Cultivos]?
-var subzoneid: Int?
+//var cultivos: [Cultivos]?
+var subzoneid: Int? = 0
 class SubzoneViewController: UIViewController {
     var refresher: UIRefreshControl!
-    var subzoneid: Int?
     var tmp: Zone?
     var subzonas: [subzone]?
     var subzona: Subzone?
-    var crops: [Cultivos] = []
-    
-    var plantings: [Planting]?
     
     let addButton: UIButton = {
        let button = UIButton()
@@ -36,7 +32,6 @@ class SubzoneViewController: UIViewController {
         let table = UITableView()
         table.register(TodoCell.self, forCellReuseIdentifier: reuseIdentifier)
         table.rowHeight = 50
-        
         return table
     }()
     
@@ -51,7 +46,8 @@ class SubzoneViewController: UIViewController {
     let deleteButton: UIButton = {
        let button = UIButton()
         button.setTitle("Delete Usuarios", for: .normal)
-        button.setTitleColor(UIColor.lightGray, for: .normal)
+        button.setTitleColor(UIColor.clear, for: .normal)
+        
         //button.backgroundColor = UIColor.green
         return button
     }()
@@ -65,15 +61,17 @@ class SubzoneViewController: UIViewController {
     }()
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = UIColor(named: "ForestGreen")
         // Do any additional setup after loading the view.
         view.addSubview(addButton)
-        addButton.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 100, paddingLeft: 250, paddingBottom: 0, paddingRight: 20, height: 30)
+        addButton.anchor(top: view.topAnchor, left: nil, bottom: nil, right: view.rightAnchor, paddingTop: 65, paddingLeft: 0, paddingBottom: 0, paddingRight: 50, height: 30)
         addButton.addTarget(self, action: #selector(handleaddSubzone), for: .touchUpInside)
         
         view.addSubview(tableView)
-        tableView.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 150, paddingLeft: 5, paddingBottom: 0, paddingRight: 20, height: 500)
+        tableView.anchor(top: addButton.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 5, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, height: 500)
         tableView.dataSource = self
         tableView.delegate = self
+        tableView.backgroundColor = .clear
         refresher = UIRefreshControl()
         refresher.attributedTitle = NSAttributedString(string: "Jala para cargar")
         refresher.addTarget(self, action: #selector(handleload), for: .valueChanged)
@@ -91,20 +89,36 @@ class SubzoneViewController: UIViewController {
         
         updateButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         updateButton.addTarget(self, action: #selector(updateresource), for: .touchUpInside)
-        load(id: (zoneid)!)
-        loadcultivos()
+        load(id: (zoneid) ?? 8)
+        
     }
     
     
     
     @objc func handleaddSubzone(){
-        let controller = AddASubzoneViewController()
-        controller.delegate = self
-        self.present(UINavigationController(rootViewController: controller), animated: true, completion: nil)
+        if usuario?.admin != teamid{
+            if teamid == nil{
+                let alert = UIAlertController(title: "No es posible agregar zona", message: "No perteneces a un equipo", preferredStyle: .alert)
+                let action = UIAlertAction(title: "Aceptar", style: .default) { (action:UIAlertAction) in
+                }
+                alert.addAction(action)
+                self.present(alert, animated: true, completion: nil)
+            }else{
+                let alert = UIAlertController(title: "No es posible agregar zona", message: "No eres administrador del equipo", preferredStyle: .alert)
+                let action = UIAlertAction(title: "Aceptar", style: .default) { (action:UIAlertAction) in
+                }
+                alert.addAction(action)
+                self.present(alert, animated: true, completion: nil)
+            }
+        }else{
+            let controller = AddASubzoneViewController()
+            controller.delegate = self
+            self.present(UINavigationController(rootViewController: controller), animated: true, completion: nil)
+        }
     }
     
     @objc func handleload(){
-        refresher.endRefreshing()
+        load(id: zoneid!)
     }
     
     
@@ -113,7 +127,7 @@ class SubzoneViewController: UIViewController {
             if error == nil {
                 DispatchQueue.main.async {
                     self.tmp = result
-                    print(result)
+                    
                     self.subzonas = self.tmp?.subzones
                     self.tableView.reloadData()
                     self.refresher.endRefreshing()
@@ -127,27 +141,13 @@ class SubzoneViewController: UIViewController {
             if error == nil {
                 DispatchQueue.main.async {
                     self.subzona = result
-                    print("result")
-                    print(self.subzona)
+                    
                     siembras = self.subzona?.plantings
-                    print("siembras")
-                    print(siembras)
+                    
                     self.refresher.endRefreshing()
                 }
             }
         
-        }
-    }
-    
-    func loadcultivos(){
-        sharedCultivoInstance.getRequest(url: "http://granjapp2.appspot.com/crops"){(str, array, error) in
-            if error == nil {
-                DispatchQueue.main.async {
-                    //self.usuarios = array
-                    self.crops = array
-                    //print(array)
-                }
-            }
         }
     }
     
@@ -171,21 +171,23 @@ class SubzoneViewController: UIViewController {
     }
 }
 extension SubzoneViewController: UITableViewDelegate, UITableViewDataSource{
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return subzonas?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
-        cell.textLabel?.text = subzonas![indexPath.row].name
+        cell.textLabel?.text = "Subzona: " + subzonas![indexPath.row].name!
+        cell.textLabel?.textColor = .white
+        cell.textLabel?.font = UIFont(name: "AvenirNext-Bold", size: 16)
         return cell
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        cultivos = crops
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath){
         subzoneid = subzonas?[indexPath.row].id
-        print(cultivos)
-        print("done")
+        navigationController?.pushViewController(PlantingViewController.init(), animated: true)
+        
     }
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
@@ -202,6 +204,7 @@ extension SubzoneViewController: AddSubzoneDelegate{
         //self.activities.append(activity)
         let subzone = ["name": name, "zone":zoneid!] as [String:Any]
         self.save(body: subzone)
+        load(id: zoneid!)
         self.tableView.reloadData()
     }
     

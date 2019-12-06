@@ -32,9 +32,9 @@ class ZoneController: NSObject{
             self.dataStr = String(data: data!, encoding: String.Encoding(rawValue: String.Encoding.utf8.rawValue)) ?? ""
             
             do{
-                let jsonResponse = try JSONSerialization.jsonObject(with: dataResponse, options: [])
+                //let jsonResponse = try JSONSerialization.jsonObject(with: dataResponse, options: [])
                 
-                guard let jsonArray = jsonResponse as? [[String: Any ]] else {return}
+                //guard let jsonArray = jsonResponse as? [[String: Any ]] else {return}
                 let decoder = JSONDecoder()
                 model = try decoder.decode([Zone].self, from: dataResponse)
                 
@@ -76,7 +76,7 @@ class ZoneController: NSObject{
                 //guard let jsonArray = jsonResponse as? [[String: Any ]] else {return}
                 let decoder = JSONDecoder()
                 model = try decoder.decode(Zone.self, from: dataResponse)
-                print(model)
+                print(model as Any)
                 //print(jsonArray)
             } catch let parsingError {
                 print("Error", parsingError)

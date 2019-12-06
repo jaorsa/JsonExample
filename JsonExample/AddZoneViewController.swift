@@ -45,7 +45,7 @@ class AddAZoneViewController: UIViewController{
             print("Nombre invalido ")
             return
         }
-        let tmp = ["name": nombre] as [String:Any]
+        let tmp = ["name": nombre, "team": teamid] as [String:Any]
         delegate?.addZone(zone: tmp)
         zoneTextField?.text = ""
     }

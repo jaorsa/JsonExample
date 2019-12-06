@@ -25,9 +25,31 @@ class JsonExampleUITests: XCTestCase {
 
     func testExample() {
         // UI tests must launch the application that they test.
+        //let app = XCUIApplication()
         let app = XCUIApplication()
         app.launch()
-
+        
+        let views = app.tabBars
+        views.textFields["Email"].tap()
+        
+        
+        
+        /*
+        XCTAssertEqual(app.buttons.count, 1)
+        app.textFields["Email"].tap()
+        
+        let logInButton = app.buttons["LOG IN "]
+        logInButton.tap()
+        app.secureTextFields["Password"].tap()
+        logInButton.tap()
+        app.textFields["Correo no valido"].tap()
+        logInButton.tap()
+        app.secureTextFields["Contraseña no valida"].tap()
+        logInButton.tap()
+        
+        */
+        
+        
         // Use recording to get started writing UI tests.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }

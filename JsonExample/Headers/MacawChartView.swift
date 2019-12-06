@@ -12,7 +12,7 @@ import UIKit
 
 class MacawChartView: MacawView{
     
-    //static let showusers = createDummyData()
+    static let showusers = createDummyData()
     static let maxValue = 500
     static let maxValueLineHeight = 180
     static let lineWidth: Double = 275
@@ -20,7 +20,7 @@ class MacawChartView: MacawView{
     static let dataDivisor = Double(maxValue/maxValueLineHeight)
     //var adjustedData: [Double]
     
-    static let adjustedData: [Double] = teamusers!.map({ Double($0.estrellas!)/dataDivisor})
+    static let adjustedData: [Double] = showusers.map({ Double($0.estrellas!)/dataDivisor})
     
     static var animations: [Animation] = []
     
@@ -64,7 +64,7 @@ class MacawChartView: MacawView{
         var newNodes: [Node] = []
         for i in 1...adjustedData.count{
             let x = (Double(i) * 50)
-            let valueText = Text(text: (teamusers?[i-1].name)!, align: .max, baseline: .mid, place: .move(dx: x, dy: chartBaseY + 15))
+            let valueText = Text(text: (showusers[i-1].name)!, align: .max, baseline: .mid, place: .move(dx: x, dy: chartBaseY + 15))
             valueText.fill = Color.green
             newNodes.append(valueText)
         }
@@ -93,15 +93,15 @@ class MacawChartView: MacawView{
     }
     
     
-    /*private static func createDummyData()->[Usuarios]{
-        let one = Work(usuario: "Lucía", calificacion: 57*10)
-        let two = Work(usuario: "Patty  ", calificacion: 39*10)
-        let three = Work(usuario: "Luciano", calificacion: 47*10)
-        let four = Work(usuario: "Paola", calificacion: 51*10)
-        let five = Work(usuario: "1", calificacion: 51*10)
-        let six = Work(usuario: "2", calificacion: 51*10)
-        let seven = Work(usuario: "3", calificacion: 51*10)
-        let eight = Work(usuario: "4", calificacion: 51*10)
-        //return [one,two,three,four]//,five,six,seven,eight]
-    }*/
+    private static func createDummyData()->[Usuarios]{
+        var array = [Usuarios]()
+        if teamusers == nil{
+            let presuser = Usuarios(id: usuario!.id, name: usuario?.name, lastname: usuario?.lastname, correo: usuario?.correo, estrellas: usuario?.estrellas, admin: usuario?.admin, Roles: nil)
+            array.append(presuser)
+            return array
+        }else{
+            return teamusers!
+        }
+    }
 }
+

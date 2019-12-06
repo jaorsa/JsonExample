@@ -47,16 +47,6 @@ extension UIView{
         //fade out
         
     }
-    func fadeIn(withDuration duration: TimeInterval = 1.0) {
-        UIView.animate(withDuration: duration, animations: {
-            self.alpha = 1.0
-        })
-    }
-    func fadeOut(withDuration duration: TimeInterval = 1.0) {
-        UIView.animate(withDuration: duration, animations: {
-            self.alpha = 0.0
-        })
-    }
     func textViewContainer(view: UIView, image: UIImage, textfield: UITextField) -> UIView{
         view.backgroundColor = .clear
         let imageView = UIImageView()
@@ -68,13 +58,13 @@ extension UIView{
         imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         
         view.addSubview(textfield)
-        textfield.anchor(top: nil, left: imageView.rightAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 0, paddingLeft: 12, paddingBottom: 0, paddingRight: 8, width: 100, height: 50)
+        textfield.anchor(top: nil, left: imageView.rightAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 0, paddingLeft: 12, paddingBottom: 0, paddingRight: 8, height: 50)
         textfield.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         
         let separator = UIView()
         separator.backgroundColor = UIColor(white: 1, alpha: 0.87)
         view.addSubview(separator)
-        separator.anchor(top: nil, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, paddingTop: 0, paddingLeft: 8, paddingBottom: 0, paddingRight: 8, width: 0, height: 0.75)
+        separator.anchor(top: nil, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, paddingTop: 0, paddingLeft: 8, paddingBottom: 0, paddingRight: 8, height: 0.75)
         
         
         return view
@@ -104,7 +94,7 @@ extension UITextField{
         let passwordTest = NSPredicate(format: "SELF MATCHES %@", "^(?=.*[a-z])(?=.*[$@$#!%*?&])[A-Za-z\\d$@$#!%*?&]{8,16}")
         return passwordTest.evaluate(with: password)
     }
-    
+    /*
     func isActivityValid(activityname: String) -> Bool{
         let activityNameRegEx = "[A-Z0-9a-z._%+-]{1,50}"
         let activityTest = NSPredicate(format: "SELF MATCHES %@", activityNameRegEx)
@@ -125,7 +115,7 @@ extension UITextField{
         let userTest = NSPredicate(format: "SELF MATCHES %@", userNameRegEx)
         return userTest.evaluate(with: name)
     }
-    
+    */
     
     
     

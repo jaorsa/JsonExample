@@ -57,7 +57,7 @@
         <!--Home View Controller-->
         <scene sceneID="7HJ-Mx-gZt">
             <objects>
-                <viewController id="lRz-2J-yfL" customClass="HomeViewController" customModule="JsonExample" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="HomeViewController" id="lRz-2J-yfL" customClass="HomeViewController" customModule="JsonExample" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8hQ-fZ-LdY">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

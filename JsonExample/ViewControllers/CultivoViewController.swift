@@ -10,12 +10,10 @@ import UIKit
 
 private let reuseIdentifier = "TodoCell"
 
-
-class UsersViewController: UIViewController {
-    var usuarios: [Users] = []
-    var usuario: Users?
-    var roles: [Roles] = []
-    var actividades: [Activities] = []
+/*
+class CultivoViewController: UIViewController {
+    var cultivos: [Cultivos] = []
+    
     
     let tableView: UITableView = {
         let table = UITableView()
@@ -95,10 +93,10 @@ class UsersViewController: UIViewController {
 
     @objc func load(){
         loadButton.setTitleColor(UIColor.blue, for: .normal)
-        sharedUsersInstance.getRequest(url: "http://localhost:10010/users"){(str, array, error) in
+        sharedCultivoInstance.getRequest(url: "http://localhost:10010/crops"){(str, array, error) in
             if error == nil {
                 DispatchQueue.main.async {
-                    self.usuarios = array
+                    self.cultivos = array
                     print(array)
                     self.tableView.reloadData()
                 }
@@ -107,36 +105,36 @@ class UsersViewController: UIViewController {
     }
     
     @objc func save(){
-        
+        saveButton.setTitleColor(UIColor.blue, for: .normal)
+        let tmp = ["name": "especie segura", "startDate": "", "endDate": "", "cropType": ""] as [String : Any]
+            sharedCultivoInstance.postRequest(url: "http://localhost:10010/crops", body: tmp)
     }
     
     
     @objc func deleteresource(){
         deleteButton.setTitleColor(UIColor.blue, for: .normal)
-        //sharedCultivoInstance.deleteRequest(url: "http://localhost:10010/crops/", id: "7")
+        sharedCultivoInstance.deleteRequest(url: "http://localhost:10010/crops/", id: "7")
     }
     
     
     @objc func updateresource(){
         updateButton.setTitleColor(UIColor.blue, for: .normal)
         let tmp = ["name": "gracias dios"] as [String:Any]
-        //sharedEspecieInstance.putRequest(url: "http://localhost:10010/users/", id: "2", body: tmp)
+        //sharedEspecieInstance.putRequest(url: "http://localhost:10010/crops/", id: "2", body: tmp)
     }
 }
-extension UsersViewController: UITableViewDelegate, UITableViewDataSource{
+extension CultivoViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return usuarios.count
+        return cultivos.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
-        cell.textLabel?.text = usuarios[indexPath.row].name
-        //roles = usuarios[0].roles!
-        //print(roles)
+        cell.textLabel?.text = cultivos[indexPath.row].name
         return cell
     }
     
     
 }
-
+*/
 

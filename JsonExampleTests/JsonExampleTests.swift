@@ -9,10 +9,12 @@
 import XCTest
 @testable import JsonExample
 
-class JsonExampleTests: XCTestCase {
 
+class JsonExampleTests: XCTestCase {
+    
     func testSections() throws {
         let section = SettingsSection(rawValue: 0)
+        
     }
     
     func testLoadUsersSuccess() throws {
@@ -29,6 +31,8 @@ class JsonExampleTests: XCTestCase {
         }
         wait(for: [expectation], timeout: 10)
     }
+    
+    
     
     func testLoadTeamsSuccess() throws {
         let url = "http://granjapp2.appspot.com/teams"
@@ -119,28 +123,7 @@ class JsonExampleTests: XCTestCase {
         wait(for: [expectation], timeout: 10)
     }
     
-    func testCreateUserFailure() throws{
-        let url = "http://granjapp2.appspot.com/users"
-        let expectation = XCTestExpectation(description: "createUser")
-        let tmp = ["name": "Daniela", "lastname": "Mendez", "correo": "matesantz@hotmail.com", "estrellas": "uno", "admin": -1] as [String:Any]
-        sharedUsersInstance.postRequest(url: url, body: tmp){(success) in
-                XCTAssertFalse(success)
-            expectation.fulfill()
-        }
-        wait(for: [expectation], timeout: 10)
-    }
-    
-    func testCreateUserSuccess() throws{
-        let url = "http://granjapp2.appspot.com/users"
-        let expectation = XCTestExpectation(description: "createUser")
-        let tmp = ["name": "Daniela", "lastname": "Mendez", "correo": "matesantz@hotmail.com", "estrellas": 1, "admin": -1] as [String:Any]
-        sharedUsersInstance.postRequest(url: url, body: tmp){(success) in
-            if success{
-                XCTAssertTrue(success)
-            }
-        }
-    }
-    
+        
     func testshowPopUpWindow() throws {
         let view = ActivitiesController()
         XCTAssertNotNil(view.handleShowPopUp)
@@ -167,6 +150,11 @@ class JsonExampleTests: XCTestCase {
         XCTAssertNotNil(vc.load())
     }
     
+    func testinfoheader() throws {
+        let v = UserInfoHeader()
+        XCTAssertNotNil(type(of: v).init())
+    }
+    
     func testCreateAnimalsSuccess() throws {
         let animalc = AnimalViewController()
         let tmp = [ "name": "Camada","fechaNacimiento": "2012-11-04", "equipo": 3,"no_h": 1, "no_m": 2, "salud": 1,"etapa": 2,"especie": 3] as [String : Any]
@@ -177,6 +165,65 @@ class JsonExampleTests: XCTestCase {
         }
     }
         
+    func testGetPlantingSuccess() throws{
+        sharedPlantingInstance.getRequest(url: "http://granjapp2.appspot.com/planting"){
+            (str, array,error) in
+            if error == nil{
+                XCTAssertNotNil(array)
+                XCTAssertNil(error)
+            }
+        }
+    }
+    
+    func testGetByIdPlantingSuccess() throws{
+        sharedPlantingInstance.getByIdRequest(url: "http://granjapp2.appspot.com/planting/", id: String(8)) {(result,error) in
+            if error == nil{
+                XCTAssertNotNil(result)
+            }
+        }
+    }
+    
+    func testTodoCell() throws{
+        let cell = TodoCell()
+        XCTAssertNotNil(type(of: cell).init())
+    }
+    
+    func testSettingsCell() throws {
+        let cell = SettingsCell()
+        XCTAssertNotNil(type(of: cell).init())
+    }
+    
+    func testResourceCell() throws {
+        let cell = ResourceCell()
+        XCTAssertNotNil(type(of: cell).init())
+    }
+    
+    func testUserCell() throws {
+        let cell = UserCell()
+        XCTAssertNotNil(type(of: cell).init())
+    }
+    
+    func testZoneCell() throws{
+        let cell = ZoneCell()
+        XCTAssertNotNil(type(of: cell).init())
+        
+    }
+    
+    func testResourceTypeCell() throws {
+        let cell = ResourceTypeCell()
+        XCTAssertNotNil(type(of: cell).init())
+    }
+    
+    func testAddZone() throws {
+        let controller = AddAZoneViewController()
+        XCTAssertNotNil(controller.viewDidLoad())
+    }
+    
+    func testprofileController() throws {
+        let controller = ProfileController()
+        XCTAssertNotNil(controller.viewDidLoad())
+    }
+    
     
     
     func testLoginSuccess() throws {
@@ -235,5 +282,21 @@ class JsonExampleTests: XCTestCase {
         XCTAssertNotNil(vc.load())
         XCTAssertNotNil(vc.handleShowPopUp())
     }
+    
+    func testViewAnimal() throws {
+        let vc = ViewAnimalController()
+        XCTAssertNotNil(vc.viewDidLoad())
+    }
+    func testViewActivities() throws {
+        let vc = ViewActivityController()
+        XCTAssertNotNil(vc.viewDidLoad())
+    }
+    
+    func testAddActivity() throws {
+        let vc = AddActivityController()
+        XCTAssertNotNil(vc.viewDidLoad())
+    }
+    
+    
     
 }

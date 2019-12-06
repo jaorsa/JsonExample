@@ -23,7 +23,6 @@ class ActivitiesCell: UITableViewCell {
             ActivityLabel.text = activity?.name
             for i in 0...(teamusers?.count ?? 1)-1{
                 if teamusers?[i].id == activity?.usuario{
-                    
                         us = teamusers?[i]
                 }
             }
@@ -63,10 +62,10 @@ class ActivitiesCell: UITableViewCell {
         ActivityButton.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
         ActivityButton.addTarget(self, action: #selector(done) , for: .touchUpInside)
         addSubview(ActivityLabel)
-        ActivityLabel.anchor(top: nil, left: ActivityButton.rightAnchor, bottom: nil, right: rightAnchor, paddingTop: 0,paddingLeft: 10 ,paddingBottom: 0,paddingRight: 10, width: dimension, height: 20)
+        ActivityLabel.anchor(top: nil, left: ActivityButton.rightAnchor, bottom: nil, right: rightAnchor, paddingTop: 0,paddingLeft: 10 ,paddingBottom: 0,paddingRight: 10, height: 20)
         ActivityLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
         addSubview(UserLabel)
-        UserLabel.anchor(top: ActivityLabel.bottomAnchor, left: ActivityButton.rightAnchor, bottom: nil, right: rightAnchor, paddingTop: 3,paddingLeft: 20 ,paddingBottom: 0,paddingRight: 10, width: dimension, height: 20)
+        UserLabel.anchor(top: ActivityLabel.bottomAnchor, left: ActivityButton.rightAnchor, bottom: nil, right: rightAnchor, paddingTop: 3,paddingLeft: 20 ,paddingBottom: 0,paddingRight: 10, height: 20)
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

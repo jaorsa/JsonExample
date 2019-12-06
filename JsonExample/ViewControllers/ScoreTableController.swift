@@ -12,17 +12,21 @@ import UIKit
 let scoreIdentifier = "ScoreCell"
 
 class ScoreTableController: UIViewController{
-    var searchBarHeader: SearchBarHeader!
+    //var searchBarHeader: SearchBarHeader!
     var tableView: UITableView!
     var teamInfoHeader: TeamInfoHeader!
-    
-    //var scores = [Score]()
     
     let efectView: UIVisualEffectView = {
         let blurEffect = UIBlurEffect(style: .light )
         let view = UIVisualEffectView(effect: blurEffect)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
+    }()
+    
+    let scrollView: UIScrollView = {
+       let scroll = UIScrollView()
+        scroll.translatesAutoresizingMaskIntoConstraints = false
+        return scroll
     }()
     
     lazy var popUpWindow: PopTeamsWindow = {
@@ -34,7 +38,6 @@ class ScoreTableController: UIViewController{
     }()
     
     @IBOutlet weak var chartView: MacawChartView!
-    //var chartView: MacawChartView!
     
     func configureTableView(){
         tableView = UITableView()
@@ -51,9 +54,11 @@ class ScoreTableController: UIViewController{
         
         view.addSubview(tableView)
         tableView.anchor(top: teamInfoHeader.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, height: 200)
+        
+        
         view.addSubview(chartView)
         chartView.contentMode = .scaleAspectFit
-        chartView.anchor(top: tableView.bottomAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, paddingTop: 5, paddingLeft: 0, paddingBottom: 20, paddingRight: 0)
+        chartView.anchor(top: tableView.bottomAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, paddingTop: 5, paddingLeft: 5, paddingBottom: 50, paddingRight: 5)
         
         
         let button = teamInfoHeader.TeamButton
@@ -66,44 +71,41 @@ class ScoreTableController: UIViewController{
         efectView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         efectView.alpha = 0
         
-        if teamid == nil{
-            return
-        }
-        else{
-        MacawChartView.playAnimations()
-        }
     }
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         //scores = createArray()
+        load()
         configureTableView()
     }
     
     @objc func load(){
         if teamid == nil{
-            teamusers = []
+            var array = [Usuarios]()
+            let presuser = Usuarios(id: usuario!.id, name: usuario?.name, lastname: usuario?.lastname, correo: usuario?.correo, estrellas: usuario?.estrellas, admin: usuario?.admin, Roles: nil)
+            array.append(presuser)
+            teamusers = array
         }else{
             sharedTeamInstance.getByIdRequest(url: "http://granjapp2.appspot.com/teams/", id: "\(teamid!)") {(userteam, error) in
             if error == nil {
                 DispatchQueue.main.async {
                     equipo = userteam
                     teamusers = equipo?.usuarios
-                    print(equipo)
-                    print(teamusers)
+                    
+                    MacawChartView.playAnimations()
+                    self.tableView.reloadData()
                 }
             }
         }
-            MacawChartView.playAnimations()
-            self.tableView.reloadData()
+            
         }
         
     }
     
     @objc func handleShowPopUp(){
-        print("boton presionado")
-        print(equipos)
+        
         view.addSubview(popUpWindow)
         popUpWindow.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -40).isActive = true
         popUpWindow.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
@@ -138,15 +140,11 @@ class ScoreTableController: UIViewController{
            navigationController?.setNavigationBarHidden(false, animated: true)
        }
     
-    func createArray() -> Void{
-        
-    }
-    
 }
 
 extension ScoreTableController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return teamusers!.count
+        return teamusers?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -165,7 +163,7 @@ extension ScoreTableController: PopUpDelegate {
         }){
             (_) in
             self.popUpWindow.removeFromSuperview()
-            print("popUpWindow removida")
+            
         }
         load()
     }

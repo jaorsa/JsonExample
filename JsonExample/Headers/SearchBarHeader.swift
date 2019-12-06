@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-
+/*
 class SearchBarHeader: UIView{
     
     let searchBar = UISearchBar()
@@ -54,4 +54,4 @@ class SearchBarHeader: UIView{
         fatalError("init(coder:) has not been implemented")
     }
     
-}
+}*/

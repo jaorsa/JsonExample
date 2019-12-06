@@ -8,30 +8,23 @@
 
 import Foundation
 import UIKit
+//import CryptoKit
+import CommonCrypto
+/*
+@available(iOS 13.0, *)
 
+extension Digest{
+    var bytes: [UInt8] { Array(makeIterator())}
+    var data: Data {Data(bytes)}
+    
+    var hexStr: String {
+        bytes.map { String(format: "%02X", $0) }.joined()
+    }
+}*/
 
-var emailtextField: UITextField? = {
-    let textf = UITextField()
-    return textf.textField(withPlaceholder: "Email", isSecureEntry: false )
-}()
-
-var passwordtextField: UITextField? = {
-    let textf = UITextField()
-    return textf.textField(withPlaceholder: "Password", isSecureEntry: true)
-}()
-
-var usernametextField: UITextField? = {
-    let textf = UITextField()
-    return textf.textField(withPlaceholder: "Nombre", isSecureEntry: false)
-}()
-
-var lastnametextField: UITextField? = {
-    let textf = UITextField()
-    return textf.textField(withPlaceholder: "Apellidos", isSecureEntry: false)
-}()
-
-
-class SignUpController: UIViewController{
+class InicioController: UIViewController{
+    var password: String?
+    var key: String?
     
     let appImageView: UIImageView = {
        let view = UIImageView()
@@ -115,43 +108,50 @@ class SignUpController: UIViewController{
             usernametextField?.attributedPlaceholder = NSAttributedString(string: "Por favor ingrese un nombre", attributes: [NSAttributedString.Key.foregroundColor: UIColor.white])
             return
         }
-        guard let apellido = lastnametextField!.text, lastnametextField!.hasText else{
-            lastnametextField?.attributedPlaceholder = NSAttributedString(string: "Por favor ingrese un apellido", attributes: [NSAttributedString.Key.foregroundColor: UIColor.white])
-            return
+        
+        let tmp = ["username": "Lourdes"]
+        sharedTokenInstance.postRequest(url: "http://granjapp2.appspot.com/login/1", body: tmp){(response) in
+            self.key = response
+            if self.key != nil{
+                sharedTokenInstance.getUsuarios(url: "http://granjapp2.appspot.com/users", token: self.key!)
+            }
         }
-        guard let correo = emailtextField!.text, emailtextField!.hasText else{
-            emailtextField?.attributedPlaceholder = NSAttributedString(string: "Por favor ingrese un correo", attributes: [NSAttributedString.Key.foregroundColor: UIColor.white])
-            return
-        }
-        guard let contraseña = passwordtextField!.text, passwordtextField!.hasText else{
-            passwordtextField?.attributedPlaceholder = NSAttributedString(string: "Por favor ingrese contraseña", attributes: [NSAttributedString.Key.foregroundColor: UIColor.white])
-            return
-        }
+            
+        /*
         if checkifuserexists(){
             return
         }
-        
-        if (emailtextField?.isValidEmail(emailStr: (emailtextField?.text!)!))!{
-            if (passwordtextField?.isPasswordValid(passwordtextField!.text!))!{
-                let tmp = ["name": nombre, "lastname": apellido, "correo": correo, "estrellas": 1, "admin": -1 ] as [String:Any]
-                sharedUsersInstance.postRequest(url: "http://granjapp2.appspot.com/users", body: tmp){ (success) in
-                    if success == true{
-                print("el usuario se ha registrado")
-                        self.navigationController?.pushViewController(TabController.init(), animated: true)
-                    }
-                }
-            }
-            else{
-                passwordtextField?.attributedPlaceholder = NSAttributedString(string: "Contraseña no segura", attributes: [NSAttributedString.Key.foregroundColor: UIColor.white])
-            }
-        }
-        else{
-            emailtextField?.attributedPlaceholder = NSAttributedString(string: "Correo no valido", attributes: [NSAttributedString.Key.foregroundColor: UIColor.white])
-        }
+        */
     }
     
+    /*
+    @available(iOS 13.0, *)
+    func textEncrypt(pass: String){
+        guard let data = pass.data(using: .utf8) else{return}
+        let digest = SHA256.hash(data: data)
+        print(digest.data)
+        print(digest.hexStr)
+        password = digest.hexStr
+    }*/
+    
+    func passwordEncrypt(string: String){
+        var sha256String = ""
+        if let data = string.data(using: .utf8){
+            var digest = [UInt8](repeating: 0, count: Int(CC_SHA256_DIGEST_LENGTH) )
+            data.withUnsafeBytes{
+                CC_SHA256($0.baseAddress, UInt32(data.count), &digest)
+            }
+            
+            for byte in digest{
+                sha256String += String(format: "%02x", UInt8(byte))
+            }
+        }
+        print(sha256String)
+    }
+    
+    /*
     func checkifuserexists()->Bool{
-        print(users)
+        print(users as Any)
         for i in 0...(users!.count)-1{
             if users?[i].correo == emailtextField?.text{
                 emailtextField?.text = ""
@@ -160,7 +160,7 @@ class SignUpController: UIViewController{
             }
         }
         return false
-    }
+    }*/
     @objc func login(){
         print("el usuario ha iniciado sesión")
         if #available(iOS 13.0, *) {
@@ -205,3 +205,4 @@ class SignUpController: UIViewController{
     
     
 }
+

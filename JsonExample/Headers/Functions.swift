@@ -8,6 +8,7 @@
 
 import Foundation
 
+/*
 extension String{
     public func testActivityFormat(name: String, descripcion: String, complejidad: Int, fecha: String) -> Bool{
         
@@ -117,3 +118,4 @@ extension String{
         
     }
 }
+*/

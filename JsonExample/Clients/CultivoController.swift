@@ -19,8 +19,8 @@ class CultivoController: NSObject{
         return sharedInstance
     }
     
-    public func getRequest(url: String, completionHandler: @escaping(String,[Cultivos], Error?) -> Void ){
-        var model = [Cultivos]()
+    public func getRequest(url: String, completionHandler: @escaping([Crop], Error?) -> Void ){
+        var model = [Crop]()
         var request = URLRequest(url: URL(string: url)!)
         request.addValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "GET"
@@ -32,11 +32,11 @@ class CultivoController: NSObject{
             self.dataStr = String(data: data!, encoding: String.Encoding(rawValue: String.Encoding.utf8.rawValue)) ?? ""
             
             do{
-                let jsonResponse = try JSONSerialization.jsonObject(with: dataResponse, options: [])
+                //let jsonResponse = try JSONSerialization.jsonObject(with: dataResponse, options: [])
                 
-                guard let jsonArray = jsonResponse as? [[String: Any ]] else {return}
+                //guard let jsonArray = jsonResponse as? [[String: Any ]] else {return}
                 let decoder = JSONDecoder()
-                model = try decoder.decode([Cultivos].self, from: dataResponse)
+                model = try decoder.decode([Crop].self, from: dataResponse)
                 
                 //print(model)
                 //print(jsonArray)
@@ -54,20 +54,17 @@ class CultivoController: NSObject{
             } catch let parsingError {
                 print("Error", parsingError)
             }
-            completionHandler(self.dataStr, model, error)
+            completionHandler(model, error)
         }
         task.resume()
     }
     
-    public func getByIdRequest(url: String, id: String, completionHandler: @escaping(Users, Error?) -> Void ){
-        var model: Users?
+    public func getByIdRequest(url: String, id: String, completionHandler: @escaping(Crop, Error?) -> Void ){
+        var model: Crop?
         var request = URLRequest(url: URL(string: url + id)!)
         request.addValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "GET"
-        
-        //let tmp = [ "name": name, "correo": correo, "equipo": equipo] as [String : Any]
-        //let jsonData = try! JSONSerialization.data(withJSONObject: tmp, options: [])
-        //request.httpBody = jsonData
+       
         let task = session.dataTask(with: request){ (data, resp, error ) in
             guard let dataResponse = data, error == nil else {
                 print(error?.localizedDescription ?? "Response Error")
@@ -79,7 +76,7 @@ class CultivoController: NSObject{
                 //let jsonResponse = try JSONSerialization.jsonObject(with: dataResponse, options: [])
                 //guard let jsonArray = jsonResponse as? [[String: Any ]] else {return}
                 let decoder = JSONDecoder()
-                model = try decoder.decode(Users.self, from: dataResponse)
+                model = try decoder.decode(Crop.self, from: dataResponse)
                 print(model)
                 //print(jsonArray)
             } catch let parsingError {
@@ -162,6 +159,4 @@ class CultivoController: NSObject{
         }
         task.resume()
     }
-    
-    
 }

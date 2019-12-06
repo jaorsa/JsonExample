@@ -86,13 +86,13 @@ class AnimalController: NSObject{
         task.resume()
     }
     
-    public func putRequest(url: String, id: String, fechaNacimiento: String, no_h: Int, no_m: Int, salud: Int, especie: Int, etapa: Int){
+    public func putRequest(url: String, id: String, body:[String:Any]){
         var request = URLRequest(url: URL(string: url + id)!)
         request.addValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         request.httpMethod = "PUT"
-        let tmp = [ "fechaNacimiento": fechaNacimiento, "no_h": no_h, "no_m": no_m, "salud": salud, "especie": especie, "etapa": etapa] as [String : Any]
-        let jsonData = try! JSONSerialization.data(withJSONObject: tmp, options: [])
+        
+        let jsonData = try! JSONSerialization.data(withJSONObject: body, options: [])
         request.httpBody = jsonData
         let task = session.dataTask(with: request) {data,response,error in
             guard let httpResponse = response as? HTTPURLResponse, let receivedData = data else{

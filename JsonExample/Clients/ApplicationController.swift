@@ -9,20 +9,18 @@
 import Foundation
 import UIKit
 
+let sharedApplicationInstance = ApplicationController()
 
-
-let sharedResourceInstance = ResourceController()
-
-class ResourceController: NSObject{
+class ApplicationController: NSObject{
     var session = URLSession.shared
     var dataStr = ""
     
-    class var Resourceinstance: JsonClient{
+    class var Applicationinstance: JsonClient{
         return sharedInstance
     }
     
-    public func getRequest(url: String, completionHandler: @escaping(String,[Resource], Error?) -> Void ){
-        var model = [Resource]()
+    public func getRequest(url: String, completionHandler: @escaping(String,[Applications], Error?) -> Void ){
+        var model = [Applications]()
         var request = URLRequest(url: URL(string: url)!)
         request.addValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "GET"
@@ -38,7 +36,7 @@ class ResourceController: NSObject{
                 
                 guard let jsonArray = jsonResponse as? [[String: Any ]] else {return}
                 let decoder = JSONDecoder()
-                model = try decoder.decode([Resource].self, from: dataResponse)
+                model = try decoder.decode([Applications].self, from: dataResponse)
                 
                 //print(model)
                 //print(jsonArray)
@@ -61,8 +59,8 @@ class ResourceController: NSObject{
         task.resume()
     }
     
-    public func getByIdRequest(url: String, id: String, completionHandler: @escaping(Resource, Error?) -> Void ){
-        var model: Resource?
+    public func getByIdRequest(url: String, id: String, completionHandler: @escaping(Applications, Error?) -> Void ){
+        var model: Applications?
         var request = URLRequest(url: URL(string: url + id)!)
         request.addValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "GET"
@@ -77,8 +75,8 @@ class ResourceController: NSObject{
                 //let jsonResponse = try JSONSerialization.jsonObject(with: dataResponse, options: [])
                 //guard let jsonArray = jsonResponse as? [[String: Any ]] else {return}
                 let decoder = JSONDecoder()
-                model = try decoder.decode(Resource.self, from: dataResponse)
-                print(model as Any)
+                model = try decoder.decode(Applications.self, from: dataResponse)
+                print(model)
                 //print(jsonArray)
             } catch let parsingError {
                 print("Error", parsingError)
@@ -113,12 +111,12 @@ class ResourceController: NSObject{
         task.resume()
     }
     
-    public func putRequest(url: String, id: String, name: String, type: Int){
+    public func putRequest(url: String, id: String, salud: Int, cultivo: Int, subzona: Int){
         var request = URLRequest(url: URL(string: url + id)!)
         request.addValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         request.httpMethod = "PUT"
-        let tmp = ["name": name, "type": type] as [String : Any]
+        let tmp = [ "salud": salud, "cultivo": cultivo, "subzona": subzona] as [String : Any]
         let jsonData = try! JSONSerialization.data(withJSONObject: tmp, options: [])
         request.httpBody = jsonData
         let task = session.dataTask(with: request) {data,response,error in

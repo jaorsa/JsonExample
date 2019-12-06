@@ -89,6 +89,6 @@ extension PopTeamsWindow: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         teamid = equipos?[indexPath.row].id
         handleDismissal()
-        print(teamid)
+        
     }
 }

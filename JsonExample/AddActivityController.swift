@@ -87,7 +87,7 @@ class AddActivityController: UIViewController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print(teamusers)
+        print(teamusers as Any)
         view.backgroundColor = .white
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(finished))
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(canceled))
@@ -119,6 +119,9 @@ class AddActivityController: UIViewController{
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         dateTextField!.text = dateFormatter.string(from: datePicker!.date)
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
+        view.addGestureRecognizer(tapGesture)
     }
     
     let toolbar: UIToolbar = {
@@ -160,10 +163,13 @@ class AddActivityController: UIViewController{
         
         //print(complexityTextField?.text! ?? 0)
         guard let nombre = activityTextField!.text, activityTextField!.hasText else{
-            print("Nombre invalido ")
+            activityTextField!.text = ""
+            activityTextField!.placeholder = "Nombre invalido"
             return
         }
         guard let complex = complexityTextField?.text! , complexityTextField!.hasText else{
+            complexityTextField?.text! = ""
+            complexityTextField?.placeholder = "Complejidad invalida"
             print("Complejidad invalida ")
             return
         }
@@ -187,7 +193,7 @@ class AddActivityController: UIViewController{
             activityTextField?.text! = ""
             descriptionTextField?.text! = ""
             complexityPicker?.selectRow(0, inComponent: 0, animated: false)
-            complexityTextField!.text = numbers[0]
+            complexityTextField!.text = ""//numbers[0]
             //userPicker?.selectedRow(inComponen)
         userTextField?.text = teamusers?[0].name
             datePicker?.setDate(Date(), animated: false)
@@ -211,6 +217,11 @@ class AddActivityController: UIViewController{
         view.endEditing(true)
     }
     
+    @objc func hideKeyboard(){
+        print("teclado escondido")
+        view.endEditing(true)
+    }
+    
     @objc func doneDate(){
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
@@ -231,11 +242,11 @@ extension AddActivityController: UIPickerViewDelegate, UIPickerViewDataSource{
         else {return teamusers!.count}
     }
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        if complexityPicker!.tag == 1{
+        if pickerView.tag == 1{
             return numbers[row]
         }
         else {
-            return teamusers![row].name
+            return teamusers?[row].name
         }
         //return ""
     }
@@ -243,13 +254,13 @@ extension AddActivityController: UIPickerViewDelegate, UIPickerViewDataSource{
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         if complexityPicker! == pickerView{
         SelectedComplexity = numbers[row]
-            self.view.endEditing(false)
+            view.endEditing(false)
         }
         else if pickerView == userPicker!{
             
-            selectedUser = teamusers![row].name
-            selectedid = teamusers![row].id
-            self.view.endEditing(false)
+            selectedUser = teamusers?[row].name
+            selectedid = teamusers?[row].id
+            view.endEditing(false)
         }
     }
     

@@ -50,7 +50,13 @@ class ViewActivityController: UIViewController{
         view.backgroundColor = UIColor(named: "Grass")
         configureView()
         setInitialValues()
-        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
+        view.addGestureRecognizer(tapGesture)
+    }
+    
+    @objc func hideKeyboard(){
+        print("teclado escondido")
+        view.endEditing(true)
     }
     
     func configureView(){

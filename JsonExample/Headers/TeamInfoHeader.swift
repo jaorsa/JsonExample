@@ -19,7 +19,9 @@ class TeamInfoHeader: UIView{
         button.layer.borderWidth = 3
         button.contentMode = .scaleAspectFill
         //image.contentMode = .scaleAspectFill
-        button.setImage(#imageLiteral(resourceName: "user"), for: .normal)
+        //button.setImage(#imageLiteral(resourceName: "user"), for: .normal)
+        button.setTitle("E", for: .normal)
+        button.tintColor = .white
         button.layer.borderColor = UIColor.white.cgColor
         button.layer.cornerRadius = 45/2
         return button

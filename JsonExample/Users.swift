@@ -14,6 +14,7 @@ struct Users: Decodable{
     var correo: String?
     var estrellas: Int?
     var admin: Int?
+    var password: String?
     var activities: [Activities]?
     var equipos: [Equipos]?
 }
@@ -40,4 +41,8 @@ var equipo: Int?
 struct Roles: Decodable{
     var user: Int?
     var team: Int?
+}
+
+struct Token: Decodable{
+    var token: String
 }

@@ -75,6 +75,12 @@ struct Applications: Decodable{
     var fecha: String
 }
 
+struct Crop: Decodable{
+    var id: Int
+    var name: String
+    var plantings: [planting]?
+}
+
 struct Animal: Decodable{
     var id: Int
     var name: String
@@ -85,4 +91,11 @@ struct Animal: Decodable{
     var salud: Int?
     var especie: Int?
     var etapa: Int?
+}
+
+struct Resource: Decodable{
+    var id: Int
+    var name: String?
+    var type: Int?
+    var aplicaciones: [Applications]
 }

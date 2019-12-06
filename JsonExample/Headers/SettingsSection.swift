@@ -9,6 +9,11 @@
 import Foundation
 import UIKit
 
+protocol SectionType: CustomStringConvertible{
+    var containsSwitch: Bool {get}
+}
+
+
 enum SettingsSection: Int, CaseIterable, CustomStringConvertible {
     case Social
     case Communications
@@ -17,36 +22,40 @@ enum SettingsSection: Int, CaseIterable, CustomStringConvertible {
     var description: String{
         switch self {
         case .Social: return "Social"
-        case .Communications: return "Communications"
+        case .Communications: return "Comunicación"
         }
     }
 }
 
-enum SocialOptions: Int, CaseIterable, CustomStringConvertible{
+enum SocialOptions: Int, CaseIterable, SectionType{
     case editProfile
+    case equipo
     case logout
-    
+     var containsSwitch: Bool {return false}
     
     var description: String{
         switch self {
-        case .editProfile: return "Edit Profile"
-        case .logout: return "Logout"
+        case .editProfile: return "Editar Perfil"
+        case .equipo: return "Ingresar a un equipo"
+        case .logout: return "Cerrar Sesión"
         }
     }
     
 }
 
 
-enum CommunicationsOptions: Int, CaseIterable, CustomStringConvertible{
+enum CommunicationsOptions: Int, CaseIterable, SectionType{
     case notifications
-    case email
-    case reportCrashes
+    
+    var containsSwitch: Bool {
+        switch self{
+        case .notifications: return true
+        }
+    }
     
     var description: String{
         switch self {
-        case .notifications: return "Notifications"
-        case .email: return "Email"
-        case .reportCrashes: return "Report Crashes"
+        case .notifications: return "Notificaciones"
         }
     }
     

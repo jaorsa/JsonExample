@@ -18,6 +18,8 @@ class SettingsController : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
+        load()
+        loadTeams()
         navigationController?.setNavigationBarHidden(true, animated: false)
     }
     
@@ -35,18 +37,37 @@ class SettingsController : UIViewController {
         userInfoHeader = UserInfoHeader(frame: frame)
         tableView.tableHeaderView = userInfoHeader
         tableView.tableFooterView = UIView()
-        
-        
+    }
+    func load(){
+        sharedUsersInstance.getByIdRequest(url: "http://granjapp2.appspot.com/users/", id: "\(usuario!.id)"){ (response,error) in
+            if error == nil{
+            DispatchQueue.main.async {
+                usuario = response
+                }
+            }
+        }
+    }
+    
+    func loadTeams(){
+        sharedTeamInstance.getRequest(url: "http://granjapp2.appspot.com/teams/"){(str,array,error) in
+            if error == nil{
+                DispatchQueue.main.async {
+                    teams = array
+                }
+            }
+        }
     }
     
       override func viewWillAppear(_ animated: Bool) {
                super.viewWillAppear(animated)
             configureUI()
+        load()
                navigationController?.setNavigationBarHidden(true, animated: false)
            }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
             configureUI()
+            load()
         navigationController?.setNavigationBarHidden(true, animated: false)
     }
            
@@ -85,7 +106,7 @@ extension SettingsController: UITableViewDelegate, UITableViewDataSource{
         view.backgroundColor = UIColor(named: "Earth")
         let title = UILabel()
         title.text = SettingsSection(rawValue: section)?.description
-        print("Section is \(section)")
+        
         title.textColor = .white
         title.font = UIFont(name: "AvenirNext-DemiBold", size: 16)
         view.addSubview(title)
@@ -106,12 +127,16 @@ extension SettingsController: UITableViewDelegate, UITableViewDataSource{
         switch section{
         case .Social:
             guard let socialsection = SocialOptions(rawValue: indexPath.row )else{return}
+            
             switch socialsection {
             case .editProfile:
                 navigationController?.pushViewController(ProfileController.init(), animated: true)
+            case .equipo:
+                navigationController?.pushViewController(JoinTeam.init(), animated: true)
             case .logout:
                 navigationController?.pushViewController(HomeViewController.init(), animated: true)
         }
+            
         default: break
         }
     }
@@ -122,14 +147,11 @@ extension SettingsController: UITableViewDelegate, UITableViewDataSource{
         switch section{
         case .Social:
             let social = SocialOptions(rawValue: indexPath.row)
-            cell.textLabel?.text = social?.description
+            cell.sectionType = social
         case .Communications:
             let communications = CommunicationsOptions(rawValue: indexPath.row)
-            cell.textLabel?.text = communications?.description
+            cell.sectionType = communications
         }
-        
-        
-        
         return cell
     }
     
